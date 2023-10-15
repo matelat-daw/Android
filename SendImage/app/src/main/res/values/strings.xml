@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Send Image</string>
+    <string name="search">Selecciona tu Imagen</string>
+    <string name="send">Envía tu Image</string>
+    <string name="ok">Conectado: Enviando la Imagen</string>
+    <string name="description">Imagen de Perfil</string>
+</resources>

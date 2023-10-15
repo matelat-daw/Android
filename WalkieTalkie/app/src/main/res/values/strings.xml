@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WalkieTalkie</string>
+    <string name="title">Para Hablar con Alguno de tus Contactos Selecciona su Nombre y Haz Click en Habla!</string>
+    <string name="talk">Habla!</string>
+    <string name="profile">Foto de Perfil</string>
+    <string name="name">Nombre de Contacto</string>
+    <string name="permission_granted">DaleNomás</string>
+    <string name="permission_required">Dame Permiso</string>
+    <string name="ok">Perfect</string>
+</resources>
