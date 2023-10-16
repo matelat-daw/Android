@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Get Audio</string>
+    <string name="title">Just Click the Button Record! to Start Recording Your Audio</string>
+    <string name="record">Record!</string>
+    <string name="recording">Recording…</string>
+    <string name="fail">El Sonido no ha Podido Ser Grabado. Has Concedido los Permisos Requeridos?</string>
+    <string name="ok">Aviso Enviado</string>
+</resources>
