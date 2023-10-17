@@ -1,10 +1,8 @@
 package com.ar.androidware.getaudio
 
 import android.Manifest
-import android.R.attr.data
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -19,13 +17,13 @@ import androidx.core.app.ActivityCompat
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
-import java.io.InputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -72,12 +70,33 @@ class MainActivity : AppCompatActivity() {
             rec?.stop()
             rec?.reset()
 
-            var path: String = (applicationContext.filesDir).toString() + "/audio.mp3"
-            Log.d("El Path Es: ", "" + path)
-            val inputStream: InputStream = FileInputStream(path)
-            val arr: ByteArray = readByte(inputStream)
-            encode = Base64.encodeToString(arr, Base64.DEFAULT)
-            inputStream.close()
+            // val path: String = (applicationContext.filesDir).toString() + "/audio.mp3"
+            val path = File(applicationContext.filesDir, "/audio.mp3")
+            var bytes: ByteArray? = null
+
+            var fis: FileInputStream? = null
+            try {
+                fis = FileInputStream(path)
+                val buffer = ByteArray(4096)
+                var readit = 0
+                while (fis.read(buffer).also { readit = it } != -1) {
+                    bytes = IOUtils.toByteArray(fis)
+                }
+            } catch (e: FileNotFoundException) {
+                println("File not found: $e")
+            } catch (e: IOException) {
+                println("Exception reading file: $e")
+            } finally {
+                try {
+                    fis?.close()
+                } catch (ignored: IOException) {
+                }
+            }
+            Log.d("La Ruta es: ", "" + path)
+            Log.d("El MP3 es: ", "" + bytes)
+
+            encode = Base64.encodeToString(bytes, Base64.DEFAULT)
+
 
             val urlRegister = "http://192.168.0.95/GetImage/server.php"
             dialog.visibility = View.VISIBLE
@@ -112,18 +131,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Throws(IOException::class)
-    fun readByte(`is`: InputStream): ByteArray {
-        val os = ByteArrayOutputStream()
-        val buffer = ByteArray(0xFFFF)
-        var len = `is`.read(buffer)
-        while (len != -1) {
-            os.write(buffer, 0, len)
-            len = `is`.read(buffer)
-        }
-        return os.toByteArray()
-    }
-
     private fun startRecording() {
         rec?.setAudioSource(MediaRecorder.AudioSource.MIC)
         rec?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -136,11 +143,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException) {
             Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
         }
-    }
-
-    private fun send()
-    {
-
     }
 
     private fun dismissProgressBar()

@@ -86,8 +86,8 @@ class MainActivity : ComponentActivity() {
 
     private fun thaImage()
     {
-        // bmp = img.drawable.toBitmap()
-        bmp = (img.drawable as BitmapDrawable).bitmap
+        // bmp = img.drawable.toBitmap() // La Imagen es mucho mayor, modifica el tamaño y pesa más de 1MB, La Original es de 50KB.
+        bmp = (img.drawable as BitmapDrawable).bitmap // La Imagen conserva el Tamaño Original, pero el peso se triplica, 150KB.
         val baos = ByteArrayOutputStream()
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         file = baos.toByteArray()
