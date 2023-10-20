@@ -6,13 +6,11 @@ import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
@@ -26,7 +24,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private lateinit var record: Button
     private var rec: MediaRecorder? = null
@@ -35,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dialog: ProgressBar
     private lateinit var encode: String
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    // @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
@@ -44,12 +42,12 @@ class MainActivity : AppCompatActivity() {
         dismissProgressBar()
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    // @RequiresApi(Build.VERSION_CODES.S)
     fun record(v: View)
     {
         if (!already) {
             already = true
-            output = File(applicationContext.filesDir, "/audio.mp3")
+            output = File(applicationContext.filesDir, "/audio.3gpp")
             record.text = getText(R.string.recording)
 
             if (applicationContext.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -69,9 +67,10 @@ class MainActivity : AppCompatActivity() {
             record.text = getText(R.string.record)
             rec?.stop()
             rec?.reset()
+            already = false
 
             // val path: String = (applicationContext.filesDir).toString() + "/audio.mp3"
-            val path = File(applicationContext.filesDir, "/audio.mp3")
+            val path = File(applicationContext.filesDir, "/audio.3gpp")
             var bytes: ByteArray? = null
 
             var fis: FileInputStream? = null
@@ -92,11 +91,8 @@ class MainActivity : AppCompatActivity() {
                 } catch (ignored: IOException) {
                 }
             }
-            Log.d("La Ruta es: ", "" + path)
-            Log.d("El MP3 es: ", "" + bytes)
 
             encode = Base64.encodeToString(bytes, Base64.DEFAULT)
-
 
             val urlRegister = "http://192.168.0.95/GetImage/server.php"
             dialog.visibility = View.VISIBLE
@@ -123,8 +119,9 @@ class MainActivity : AppCompatActivity() {
                     dismissProgressBar()
                 }) {
                 override fun getParams(): MutableMap<String, String> {
+                    val params: MutableMap<String, String> = HashMap()
                     params["img"] = encode
-                    return HashMap()
+                    return params
                 }
             }
             queue.add(stringRequest)
@@ -133,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startRecording() {
         rec?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        rec?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        rec?.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
         rec?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
         rec?.setOutputFile(output)
 

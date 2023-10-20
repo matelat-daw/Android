@@ -17,7 +17,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 
-
 class MainActivity : ComponentActivity() {
     private lateinit var bmp: Bitmap
     private lateinit var img: ImageView

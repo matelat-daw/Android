@@ -12,3 +12,8 @@ if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
 		startRecording()
 	}
 }
+
+
+FireBase Token
+
+Variable de Entorno: $env:GOOGLE_APPLICATION_CREDENTIALS="C:\Server\JSON\key.json"
